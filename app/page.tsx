@@ -2,7 +2,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { ErrorBox, Notice } from '@/components/Feedback';
+import Link from 'next/link';
 import { mins, STATUS_LABEL, todayKST } from '@/lib/format';
+import { DayGrid } from '@/components/DayGrid';
+
+const WEEKDAY = ['일', '월', '화', '수', '목', '금', '토'];
+const addDays = (d: string, n: number) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+const weekday = (d: string) => WEEKDAY[new Date(`${d}T00:00:00Z`).getUTCDay()];
+const toMin = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
 
 type Row = {
   id: number; reserved_date: string; start_time: string; end_time: string; people_count: number; status: string;
@@ -11,8 +18,13 @@ type Row = {
 };
 
 export default function Reservations() {
-  const [date, setDate] = useState(todayKST());
+  const today = todayKST();
+  const [date, setDate] = useState(today);
   const [rows, setRows] = useState<Row[]>([]);
+  const [todayRows, setTodayRows] = useState<Row[]>([]);
+  const [rooms, setRooms] = useState<string[]>([]);
+  const [ending, setEnding] = useState<{ member_name: string; end_date: string }[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [notice, setNotice] = useState<string>('');
   const [asOf, setAsOf] = useState('');
@@ -22,12 +34,40 @@ export default function Reservations() {
 
   const load = useCallback(async () => {
     try {
-      setRows(await api<Row[]>(`/admin/reservations?date=${date}`));
+      const list = await api<Row[]>(`/admin/reservations?date=${date}`);
+      setRows(list);
+      // 위쪽 "오늘 한눈에" 카드는 보고 있는 날짜와 상관없이 항상 오늘 기준이다.
+      setTodayRows(date === today ? list : await api<Row[]>(`/admin/reservations?date=${today}`));
     } catch (e) {
       setError(e);
     }
-  }, [date]);
+  }, [date, today]);
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    api<{ name: string }[]>('/meeting-rooms').then((r) => setRooms(r.map((x) => x.name))).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const limit = addDays(today, 7);
+    const months = Array.from(new Set([today.slice(0, 7), limit.slice(0, 7)]));
+    Promise.all(months.map((m) => api<any[]>(`/admin/memberships/ending?month=${m}`)))
+      .then((parts) => setEnding(parts.flat().filter((e) => e.end_date >= today && e.end_date <= limit)))
+      .catch(() => {});
+  }, [today]);
+
+  const selectBar = (id: number) => {
+    setSelectedId(id);
+    document.getElementById(`res-${id}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  };
+
+  // 오늘 한눈에: 한국 시간 기준으로 계산한다.
+  const kst = new Date(Date.now() + 9 * 3600 * 1000);
+  const nowMin = kst.getUTCHours() * 60 + kst.getUTCMinutes();
+  const liveToday = todayRows.filter((r) => r.status !== 'cancelled');
+  const waiting = todayRows.filter((r) => r.status === 'reserved' && !r.checked_in_at);
+  const overdue = waiting.filter((r) => toMin(r.start_time) + 15 < nowMin);
+  const noShows = todayRows.filter((r) => r.status === 'no_show');
 
   const act = async (fn: () => Promise<any>, okMsg?: (r: any) => string) => {
     setError(null);
@@ -53,9 +93,37 @@ export default function Reservations() {
 
   return (
     <>
+      <h1>오늘 한눈에</h1>
+      <div className="dash">
+        <div className="stat">
+          <span className="stat-label">오늘 예약</span>
+          <span className="stat-num">{liveToday.length}<small>건</small></span>
+          <span className="stat-sub">사용 완료 {todayRows.filter((r) => r.status === 'completed').length}건 · 예약됨 {todayRows.filter((r) => r.status === 'reserved').length}건</span>
+        </div>
+        <div className={`stat${overdue.length ? ' warn' : ''}`}>
+          <span className="stat-label">사용 시작 대기</span>
+          <span className="stat-num">{waiting.length}<small>건</small></span>
+          <span className="stat-sub">{overdue.length ? `${overdue.length}건은 시작 15분이 지났어요 (노쇼 전환 대상)` : '아직 시작을 누르지 않은 예약'}</span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">오늘 노쇼</span>
+          <span className="stat-num">{noShows.length}<small>건</small></span>
+          <span className="stat-sub">{noShows.length ? '억울한 건은 표에서 정정할 수 있어요' : '노쇼가 없어요'}</span>
+        </div>
+        <Link href="/reports" className="stat">
+          <span className="stat-label">7일 안에 끝나는 멤버십</span>
+          <span className="stat-num">{ending.length}<small>곳</small></span>
+          <span className="stat-sub">{ending.length ? ending.slice(0, 2).map((e) => `${e.member_name} (${e.end_date.slice(5)})`).join(', ') + (ending.length > 2 ? ` 외 ${ending.length - 2}곳` : '') : '곧 끝나는 멤버십이 없어요'}</span>
+        </Link>
+      </div>
+
       <h1>예약 현황</h1>
-      <div className="toolbar"><div className="row">
-        <label>날짜<input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></label>
+      <div className="toolbar"><div className="datenav">
+        <button className="outline" onClick={() => setDate(addDays(date, -1))}>이전 날</button>
+        <label>날짜<input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} /></label>
+        <button className="outline" onClick={() => setDate(addDays(date, 1))}>다음 날</button>
+        <button className="outline" onClick={() => setDate(today)} disabled={date === today}>오늘</button>
+        <span className="date-title">{date} ({weekday(date)}){date === today ? ' · 오늘' : ''}</span>
         <button className="outline" onClick={load}>새로고침</button>
         <button className="primary" onClick={markNoShows}>노쇼 전환</button>
       </div>
@@ -80,6 +148,8 @@ export default function Reservations() {
           )}
         </div>
       )}
+      <DayGrid rooms={rooms} rows={rows} nowMin={date === today ? nowMin : null} selectedId={selectedId} onSelect={selectBar} />
+
       <div className="table-wrap"><table style={{ minWidth: 880 }}>
         <thead>
           <tr><th>방</th><th>시간</th><th>예약자</th><th>소속 멤버</th><th className="num">인원</th><th>상태</th><th>차감 시간</th><th>정정 사유</th><th>동작</th></tr>
@@ -87,7 +157,7 @@ export default function Reservations() {
         <tbody>
           {rows.length === 0 && <tr><td colSpan={9} className="muted" style={{ textAlign: 'center', padding: 32 }}>이 날짜의 예약이 없어요.</td></tr>}
           {rows.map((r) => (
-            <tr key={r.id}>
+            <tr key={r.id} id={`res-${r.id}`} className={selectedId === r.id ? 'row-sel' : ''}>
               <td>{r.room_name}</td>
               <td>{r.start_time}~{r.end_time}</td>
               <td>{r.user_name}</td>

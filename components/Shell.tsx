@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { clearSession, getToken, getUser, User } from '@/lib/api';
 import { ROLE_LABEL } from '@/lib/format';
+import { Logo } from './Logo';
 
 const PUBLIC = ['/login'];
 
@@ -56,7 +57,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="top">
-        <strong className="brand">모퉁이 어드민</strong>
+        <Link href="/" className="brand" aria-label="모퉁이 어드민 홈"><Logo size={28} text="모퉁이 어드민" variant="white" /></Link>
         {!forced && (
           <nav>
             {nav.map((n) => (

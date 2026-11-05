@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, saveSession, User } from '@/lib/api';
 import { ErrorBox } from '@/components/Feedback';
+import { LogoMark } from '@/components/Logo';
 
 // 체험용 직원 계정 안내는 환경 변수로 켠다. 값이 없으면 화면에 나오지 않는다. (관리자 계정은 넣지 않는다)
 const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL;
@@ -32,6 +33,7 @@ export default function Login() {
 
   return (
     <div className="card narrow">
+      <div className="auth-logo"><LogoMark size={56} /></div>
       <h1>모퉁이 어드민 로그인</h1>
       <form className="stack" onSubmit={submit}>
         <label>이메일<input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" /></label>
