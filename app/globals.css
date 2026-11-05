@@ -1,0 +1,56 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; color: #1f2430; background: #f5f6f8; font-size: 14px; }
+.top { display: flex; align-items: center; gap: 24px; padding: 0 20px; height: 52px; background: #fff; border-bottom: 1px solid #dfe2e8; position: sticky; top: 0; z-index: 5; }
+.brand { font-size: 16px; }
+.top nav { display: flex; gap: 4px; flex: 1; }
+.top nav a { padding: 6px 12px; border-radius: 6px; color: #444; text-decoration: none; }
+.top nav a:hover { background: #eef0f4; }
+.top nav a.active { background: #1f4fd8; color: #fff; }
+.who { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+h1 { font-size: 20px; margin: 0 0 16px; }
+h2 { font-size: 16px; margin: 24px 0 10px; }
+.center { text-align: center; padding: 80px 0; }
+.card { background: #fff; border: 1px solid #dfe2e8; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.narrow { max-width: 380px; margin: 80px auto; }
+table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dfe2e8; border-radius: 8px; overflow: hidden; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eceef2; vertical-align: top; }
+th { background: #f0f2f6; font-weight: 600; font-size: 13px; white-space: nowrap; }
+td.num, th.num { text-align: right; }
+button { font: inherit; padding: 6px 12px; border: 1px solid #c5cad4; background: #fff; border-radius: 6px; cursor: pointer; }
+button:hover:not(:disabled) { background: #eef0f4; }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { background: #1f4fd8; color: #fff; border-color: #1f4fd8; }
+button.primary:hover:not(:disabled) { background: #1a43b8; }
+button.danger { color: #b3261e; border-color: #e0b4b0; }
+button.small { padding: 3px 8px; font-size: 12px; }
+input, select { font: inherit; padding: 6px 8px; border: 1px solid #c5cad4; border-radius: 6px; background: #fff; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #555; }
+.row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.muted { color: #777; }
+.small { font-size: 12px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.badge.db { background: #fde7e7; color: #a11a1a; border: 1px solid #f1b5b5; }
+.badge.be { background: #fff1d6; color: #8a5a00; border: 1px solid #f0d08a; }
+.badge.net { background: #e6e9ef; color: #444; }
+.badge.role { background: #e7eefc; color: #1f4fd8; }
+.badge.st-reserved { background: #e7eefc; color: #1f4fd8; }
+.badge.st-completed { background: #e3f5e8; color: #1c7a3a; }
+.badge.st-cancelled { background: #eceef2; color: #666; }
+.badge.st-no_show { background: #fde7e7; color: #a11a1a; }
+.errbox { border: 2px solid #d94b4b; background: #fff5f5; border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+.errhead { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.errmsg { font-size: 15px; font-weight: 600; color: #7a1212; }
+.notice { border: 1px solid #9fd3ae; background: #effaf2; color: #17602f; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+.tempbox { border: 3px dashed #1f4fd8; background: #f2f6ff; border-radius: 10px; padding: 18px; margin: 12px 0; text-align: center; }
+.tempbox code { display: block; font-size: 28px; font-weight: 700; letter-spacing: 1px; margin: 10px 0; user-select: all; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 8px 0; }
+.kv dt { color: #666; } .kv dd { margin: 0; text-align: right; }
+.kv .total { font-weight: 700; }
+.bar { background: #e6e9ef; border-radius: 4px; height: 14px; min-width: 120px; }
+.bar > div { background: #1f4fd8; height: 100%; border-radius: 4px; }
+details { margin-bottom: 10px; }
+summary { cursor: pointer; color: #555; }
+ul.plain { margin: 6px 0; padding-left: 18px; }
