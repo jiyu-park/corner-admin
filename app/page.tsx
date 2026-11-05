@@ -54,18 +54,18 @@ export default function Reservations() {
   return (
     <>
       <h1>예약 현황</h1>
-      <div className="row">
+      <div className="toolbar"><div className="row">
         <label>날짜<input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></label>
-        <button onClick={load}>새로고침</button>
+        <button className="outline" onClick={load}>새로고침</button>
         <button className="primary" onClick={markNoShows}>노쇼 전환</button>
       </div>
-      <details>
+      <details style={{ marginTop: 8, marginBottom: 0 }}>
         <summary>시연용 옵션: 기준 시각(as_of)</summary>
         <label style={{ maxWidth: 320, marginTop: 8 }}>
           이 시각이 &quot;지금&quot;이라고 가정 (비우면 실제 현재 시각)
           <input value={asOf} onChange={(e) => setAsOf(e.target.value)} placeholder="예: 2026-11-05T10:30:00" />
         </label>
-      </details>
+      </details></div>
       <ErrorBox error={error} />
       <Notice>{notice}</Notice>
       {nsResult && (
@@ -80,12 +80,12 @@ export default function Reservations() {
           )}
         </div>
       )}
-      <table>
+      <div className="table-wrap"><table style={{ minWidth: 880 }}>
         <thead>
           <tr><th>방</th><th>시간</th><th>예약자</th><th>소속 멤버</th><th className="num">인원</th><th>상태</th><th>차감 시간</th><th>정정 사유</th><th>동작</th></tr>
         </thead>
         <tbody>
-          {rows.length === 0 && <tr><td colSpan={9} className="muted">이 날짜의 예약이 없어요.</td></tr>}
+          {rows.length === 0 && <tr><td colSpan={9} className="muted" style={{ textAlign: 'center', padding: 32 }}>이 날짜의 예약이 없어요.</td></tr>}
           {rows.map((r) => (
             <tr key={r.id}>
               <td>{r.room_name}</td>
@@ -114,7 +114,7 @@ export default function Reservations() {
                         const ok = await act(() => api(`/admin/reservations/${r.id}/correct`, { body: { reason } }));
                         if (ok) { setCorrecting(null); setReason(''); }
                       }}>확인</button>
-                      <button className="small" onClick={() => setCorrecting(null)}>취소</button>
+                      <button className="small outline" onClick={() => setCorrecting(null)}>취소</button>
                     </div>
                   ) : (
                     <button className="small" onClick={() => { setCorrecting(r.id); setReason(''); }}>정정</button>
@@ -124,7 +124,7 @@ export default function Reservations() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </>
   );
 }

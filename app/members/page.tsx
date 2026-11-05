@@ -38,10 +38,10 @@ export default function Members() {
   return (
     <>
       <h1>멤버·청구</h1>
-      <div className="row">
+      <div className="toolbar"><div className="row">
         <label>회사 이름<input value={newName} onChange={(e) => setNewName(e.target.value)} /></label>
         <button className="primary" onClick={() => act(() => api('/admin/members', { body: { name: newName } }), (r) => `회사 멤버 "${r.name}"을 만들었어요.`).then(() => setNewName(''))}>회사 멤버 만들기</button>
-      </div>
+      </div></div>
       <ErrorBox error={error} />
       <Notice>{notice}</Notice>
       <div className="grid">
@@ -49,14 +49,14 @@ export default function Members() {
           const b = m.billing;
           return (
             <div className="card" key={m.id}>
-              <div><strong>{m.name}</strong> <span className="badge role">{m.type === 'company' ? '회사' : '개인'}</span></div>
-              <h2 style={{ marginTop: 12 }}>소속 고객</h2>
+              <div className="card-head"><span>{m.name}</span> <span className={`tag ${m.type === 'company' ? 'company' : ''}`}>{m.type === 'company' ? '회사' : '개인'}</span></div>
+              <h2>소속 고객</h2>
               {m.users.length === 0 ? <div className="muted">없음</div> : (
                 <ul className="plain">
                   {m.users.map((u: any) => (
                     <li key={u.member_user_id}>
-                      {u.name} <span className="muted small">{u.email}</span>{' '}
-                      <button className="small danger" onClick={() => act(() => api(`/admin/member-users/${u.member_user_id}/leave`, { method: 'POST', body: {} }), () => '퇴사 처리했어요.')}>퇴사 처리</button>
+                      <span className="chip">{u.name} <span className="muted small">{u.email}</span>{' '}
+                      <button className="small danger" onClick={() => act(() => api(`/admin/member-users/${u.member_user_id}/leave`, { method: 'POST', body: {} }), () => '퇴사 처리했어요.')}>퇴사 처리</button></span>
                     </li>
                   ))}
                 </ul>

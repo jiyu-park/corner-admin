@@ -54,10 +54,10 @@ export default function Staff() {
           <div><strong>{temp.name}</strong> ({temp.email})의 임시 비밀번호</div>
           <code>{temp.pw}</code>
           <div>이 비밀번호는 <strong>지금 한 번만</strong> 보여요. 복사해서 직원에게 전달해 주세요. 직원은 첫 로그인 때 바꿔야 해요.</div>
-          <button style={{ marginTop: 8 }} onClick={() => navigator.clipboard?.writeText(temp.pw)}>복사</button>
+          <button className="primary" onClick={() => navigator.clipboard?.writeText(temp.pw)}>복사</button>
         </div>
       )}
-      <table>
+      <div className="table-wrap"><table style={{ minWidth: 760 }}>
         <thead><tr><th>이메일</th><th>이름</th><th>역할</th><th>사용 여부</th><th>임시 비밀번호</th><th>동작</th></tr></thead>
         <tbody>
           {rows.map((s) => (
@@ -72,21 +72,21 @@ export default function Staff() {
                     </select>
                   </td>
                   <td>
-                    <label style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <label className="inline">
                       <input type="checkbox" checked={edit.is_active} onChange={(e) => setEdit({ ...edit, is_active: e.target.checked })} /> 사용
                     </label>
                   </td>
                   <td>{s.must_change_password ? '변경 대기' : '-'}</td>
                   <td>
                     <button className="small primary" onClick={async () => { if (await act(() => api(`/admin/staff/${s.id}`, { method: 'PATCH', body: edit }), '수정했어요.')) setEditId(null); }}>저장</button>{' '}
-                    <button className="small" onClick={() => setEditId(null)}>취소</button>
+                    <button className="small outline" onClick={() => setEditId(null)}>취소</button>
                   </td>
                 </>
               ) : (
                 <>
                   <td>{s.name}</td>
-                  <td>{ROLE_LABEL[s.role] ?? s.role}</td>
-                  <td>{s.is_active ? '사용 중' : <span className="badge st-no_show">중지</span>}</td>
+                  <td><span className={`badge role ${s.role}`}>{ROLE_LABEL[s.role] ?? s.role}</span></td>
+                  <td>{s.is_active ? <span className="badge st-completed">사용 중</span> : <span className="badge st-off">중지</span>}</td>
                   <td>{s.must_change_password ? '변경 대기' : '-'}</td>
                   <td>
                     <button className="small" onClick={() => { setEditId(s.id); setEdit({ name: s.name, role: s.role, is_active: s.is_active }); }}>수정</button>{' '}
@@ -97,7 +97,7 @@ export default function Staff() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </>
   );
 }

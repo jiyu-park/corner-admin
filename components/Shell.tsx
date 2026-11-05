@@ -68,9 +68,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         )}
         <div className="who">
           <span>
-            {user.name} <span className="badge role">{ROLE_LABEL[user.role]}</span>
+            {user.name} <span className={`badge role ${user.role}`}>{ROLE_LABEL[user.role]}</span>
           </span>
-          <button onClick={logout}>로그아웃</button>
+          <button className="outline" onClick={logout}>로그아웃</button>
         </div>
       </header>
       <main>{children}</main>

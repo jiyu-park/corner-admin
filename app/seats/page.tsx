@@ -54,7 +54,7 @@ export default function Seats() {
       </form>
       <ErrorBox error={error} />
       <Notice>{notice}</Notice>
-      <table>
+      <div className="table-wrap"><table>
         <thead><tr><th>자리</th><th>현재 배정 멤버</th><th>기간</th></tr></thead>
         <tbody>
           {seats.map((s) => (
@@ -65,7 +65,7 @@ export default function Seats() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </>
   );
 }
