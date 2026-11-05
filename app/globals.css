@@ -311,3 +311,8 @@ a.stat:hover { border-color: var(--blue-500); }
 .dg-legend i.st-no_show { background: var(--orange-50); border-color: var(--orange-500); }
 .dg-legend i.now { background: var(--orange-500); width: 3px; border-radius: 2px; }
 tr.row-sel td { background: var(--blue-50); }
+
+/* 시간표 막대: 짧은 예약도 시각(위)과 예약자 이름(아래)을 함께 보여 준다 */
+.dg-bar { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; line-height: 1.1; }
+.dg-bar .dg-t { font-size: 12px; }
+.dg-bar .dg-n { font-size: 11px; font-weight: var(--weight-medium); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

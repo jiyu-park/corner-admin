@@ -58,7 +58,6 @@ export function DayGrid({
               {live.filter((r) => r.room_name === name).map((r) => {
                 const s = toMin(r.start_time);
                 const e = toMin(r.end_time);
-                const wide = (e - s) >= 90;
                 return (
                   <button
                     type="button"
@@ -69,7 +68,8 @@ export function DayGrid({
                     aria-label={`${name} ${r.start_time}부터 ${r.end_time}까지 ${r.user_name} ${STATUS_LABEL[r.status] ?? r.status}`}
                     onClick={() => onSelect(r.id)}
                   >
-                    {wide ? `${r.start_time} ${r.user_name}` : r.start_time}
+                    <span className="dg-t">{r.start_time}</span>
+                    <span className="dg-n">{r.user_name}</span>
                   </button>
                 );
               })}
