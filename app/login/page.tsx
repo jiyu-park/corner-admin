@@ -4,6 +4,10 @@ import { useRouter } from 'next/navigation';
 import { api, saveSession, User } from '@/lib/api';
 import { ErrorBox } from '@/components/Feedback';
 
+// 체험용 직원 계정 안내는 환경 변수로 켠다. 값이 없으면 화면에 나오지 않는다. (관리자 계정은 넣지 않는다)
+const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -35,6 +39,27 @@ export default function Login() {
         <button className="primary" disabled={busy}>로그인</button>
       </form>
       <ErrorBox error={error} />
+      {demoEmail && demoPassword && (
+        <div className="demo">
+          <strong>체험용 직원 계정</strong>
+          <p className="small">
+            이메일 <code>{demoEmail}</code>
+            <br />
+            비밀번호 <code>{demoPassword}</code>
+          </p>
+          <p className="small">일반 직원 권한이라 직원 관리 메뉴는 보이지 않습니다.</p>
+          <button
+            type="button"
+            className="outline"
+            onClick={() => {
+              setEmail(demoEmail);
+              setPassword(demoPassword);
+            }}
+          >
+            체험용 계정으로 채우기
+          </button>
+        </div>
+      )}
     </div>
   );
 }
