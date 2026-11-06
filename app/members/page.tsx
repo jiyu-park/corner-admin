@@ -5,7 +5,7 @@ import { ErrorBox, Notice } from '@/components/Feedback';
 import { mins, won, ymd } from '@/lib/format';
 
 type Plan = { id: number; name: string; monthly_fee?: number; monthly_hours?: number };
-type Customer = { id: number; name: string; email: string; member_name: string | null };
+type Customer = { id: string; name: string; email: string; member_name: string | null };
 
 export default function Members() {
   const [members, setMembers] = useState<any[]>([]);
@@ -68,7 +68,7 @@ export default function Members() {
                     {customers.map((c) => <option key={c.id} value={c.id}>{c.name} ({c.email}){c.member_name ? ` · 현재 ${c.member_name}` : ''}</option>)}
                   </select>
                 </label>
-                <button className="small" onClick={() => act(() => api(`/admin/members/${m.id}/users`, { body: { user_id: userSel[m.id] ? Number(userSel[m.id]) : undefined } }), () => '고객을 소속시켰어요.')}>고객 소속 추가</button>
+                <button className="small" onClick={() => act(() => api(`/admin/members/${m.id}/users`, { body: { user_id: userSel[m.id] || undefined } }), () => '고객을 소속시켰어요.')}>고객 소속 추가</button>
               </div>
 
               <h2>멤버십</h2>

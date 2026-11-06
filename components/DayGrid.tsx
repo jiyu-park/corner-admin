@@ -2,7 +2,7 @@
 import { STATUS_LABEL } from '@/lib/format';
 
 export type GridRow = {
-  id: number;
+  id: string;
   start_time: string;
   end_time: string;
   status: string;
@@ -31,8 +31,8 @@ export function DayGrid({
   rooms: string[];
   rows: GridRow[];
   nowMin: number | null; // 오늘이 아니면 null
-  selectedId: number | null;
-  onSelect: (id: number) => void;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }) {
   const names = rooms.length ? rooms : Array.from(new Set(rows.map((r) => r.room_name)));
   const live = rows.filter((r) => r.status !== 'cancelled');

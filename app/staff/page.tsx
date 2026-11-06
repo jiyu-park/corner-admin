@@ -12,7 +12,7 @@ export default function Staff() {
   const [notice, setNotice] = useState('');
   const [temp, setTemp] = useState<{ name: string; email: string; pw: string } | null>(null);
   const [form, setForm] = useState({ email: '', name: '', role: 'staff' });
-  const [editId, setEditId] = useState<number | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
   const [edit, setEdit] = useState({ name: '', role: 'staff', is_active: true });
 
   const load = useCallback(async () => {

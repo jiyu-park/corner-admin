@@ -1,6 +1,6 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export type User = { id: number; email: string; name: string; role: 'staff' | 'admin'; must_change_password: boolean };
+export type User = { id: string; email: string; name: string; role: 'staff' | 'admin'; must_change_password: boolean };
 
 export class ApiError extends Error {
   statusCode: number;

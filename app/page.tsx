@@ -12,7 +12,7 @@ const weekday = (d: string) => WEEKDAY[new Date(`${d}T00:00:00Z`).getUTCDay()];
 const toMin = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
 
 type Row = {
-  id: number; reserved_date: string; start_time: string; end_time: string; people_count: number; status: string;
+  id: string; reserved_date: string; start_time: string; end_time: string; people_count: number; status: string;
   checked_in_at: string | null; correction_reason: string | null; room_name: string; user_name: string;
   member_name: string | null; charged_minutes: number;
 };
@@ -24,12 +24,12 @@ export default function Reservations() {
   const [todayRows, setTodayRows] = useState<Row[]>([]);
   const [rooms, setRooms] = useState<string[]>([]);
   const [ending, setEnding] = useState<{ member_name: string; end_date: string }[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [notice, setNotice] = useState<string>('');
   const [asOf, setAsOf] = useState('');
   const [nsResult, setNsResult] = useState<any>(null);
-  const [correcting, setCorrecting] = useState<number | null>(null);
+  const [correcting, setCorrecting] = useState<string | null>(null);
   const [reason, setReason] = useState('');
 
   const load = useCallback(async () => {
@@ -56,7 +56,7 @@ export default function Reservations() {
       .catch(() => {});
   }, [today]);
 
-  const selectBar = (id: number) => {
+  const selectBar = (id: string) => {
     setSelectedId(id);
     document.getElementById(`res-${id}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   };
@@ -142,7 +142,7 @@ export default function Reservations() {
           {nsResult.reservations?.length > 0 && (
             <ul className="plain">
               {nsResult.reservations.map((x: any) => (
-                <li key={x.id}>예약 #{x.id}: 차감 {x.percent}%{x.first_violation ? ' (첫 위반)' : ''}</li>
+                <li key={x.id}>{x.reserved_date} {x.start_time} {x.room_name} · {x.user_name}: 차감 {x.percent}%{x.first_violation ? ' (첫 위반)' : ''}</li>
               ))}
             </ul>
           )}

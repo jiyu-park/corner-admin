@@ -26,7 +26,7 @@ export default function Seats() {
     e.preventDefault();
     setError(null); setNotice('');
     try {
-      await api(`/admin/seats/${seatId || 0}/assign`, { body: { member_id: memberId ? Number(memberId) : undefined, start_date: start, end_date: end || null } });
+      await api(`/admin/seats/${seatId || 0}/assign`, { body: { member_id: memberId || undefined, start_date: start, end_date: end || null } });
       setNotice('자리를 배정했어요.');
       await load();
     } catch (err) { setError(err); }
